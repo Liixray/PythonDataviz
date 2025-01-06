@@ -21,17 +21,34 @@ def getMapData(baseData,year,displayPrimary):
     maxPupilTeacher = worldEducationForMap[columnName].max()
     return worldEducationForMap, maxPupilTeacher
     
-    
+    #  iris.rename(columns={   "sepal.length": "sepal_length",
+    #                     "sepal.width": "sepal_width",
+    #                     "petal.length": "petal_length",
+    #                     "petal.width": "petal_width"},
+    #                         inplace = True)
 #
 # Data
 #
 with open("archive/countries.geo.json", "r") as f:
     counties = json.load(f)
 year = 1999
+country_name="Korea, Rep."
 displayPrimaryOnMap = True
+countryContinent = pds.read_csv("archive/country-and-continent-codes-list.csv")
 worldEducation = pds.read_csv("archive/world-education-data.csv")
+# print(countryContinent['Three_Letter_Country_Code'])
+worldEducation = pds.merge(worldEducation, countryContinent[["Continent_Name","Three_Letter_Country_Code"]], left_on="country_code", right_on="Three_Letter_Country_Code")
+# worldEducation["continent"] = countryContinent[countryContinent["Three_Letter_Country_Code"]=="JPN"]["Continent_Name"]
 worldEducationByYear = worldEducation[ worldEducation["year"]==year ]
 worldEducationForMap,maxPupilTeacher = getMapData(worldEducation,year,displayPrimaryOnMap)
+
+continentEducation = worldEducation[(worldEducation['gov_exp_pct_gdp'].notna())&(worldEducation["year"]<=year)]
+continentEducation = continentEducation.sort_values(by=['country','year'],ascending=[True,False])
+continentEducation = continentEducation.drop_duplicates(subset="country",keep="first")
+continentEducation = continentEducation.groupby('Continent_Name')['gov_exp_pct_gdp'].mean().reset_index()
+print(continentEducation)
+# Afficher le résultat
+
 
 gapminder = px.data.gapminder() # (1)
 years = gapminder["year"].unique()
@@ -39,8 +56,9 @@ app = dash.Dash(__name__) # (3)
 a = worldEducation.select_dtypes(include=[np.number])
 corr= a.corr().round(2)
 # print(data)
-
-
+worldEducationForCountry = worldEducation[worldEducation["country"]==country_name]
+# print(worldEducationForCountry)
+# print(countryContinent[countryContinent["Three_Letter_Country_Code"]==worldEducation[worldEducation["country"]=="Japan"]["country_code"]])
 @app.callback(
     [
         # dash.Output(component_id='graph1', component_property='figure'),
@@ -75,8 +93,34 @@ def update_map(input_value, elementary_button, secondary_button): # (3)
     dash.Input(component_id='heatmap-switch', component_property='on') # (2)
 )
 def toggle_heatmap_text(on):
-    print(on)
+    # print(on)
     return px.imshow(corr, text_auto=on)
+
+# Now create the graph that updates the country name based on hover and showing Years on x-axis and Display value
+# of chosen dataframe on y-axis
+@app.callback(
+    # dash.Output("line_graph", "figure"),
+    dash.Input("graph2", "clickData"),
+    # dashInput("dataframe_dropdown", "value"),
+    # Input("residence_area_type", "value"),
+)
+def create_graph(clickData): #, dataframe_dropdown, residence_area_type
+    # print(clickData)
+    if clickData is not None:
+        country_name = clickData["points"][0]["hovertext"]
+
+
+    # # country_name = clickData["points"][0]["customdata"]
+    # df = check_dropdown(dataframe_dropdown)
+
+    # dff = df[df["Country"] == country_name]
+    # dff = dff[dff["Residence Area Type"] == residence_area_type]
+
+    # dff.sort_values(by="Year")
+    # #
+    # fig = px.line(dff, x="Year", y="Display Value", markers=True)
+
+    # return fig
     
 
 if __name__ == '__main__':
@@ -92,8 +136,11 @@ if __name__ == '__main__':
                            hover_name="country",
                            labels={'pupil_teacher_primary' if displayPrimaryOnMap else 'pupil_teacher_secondary':'Nombre d\'élèves par professeurs'}
                                     )
-
-
+    graphContinent = px.histogram(continentEducation,x="Continent_Name",y="gov_exp_pct_gdp")
+    graphCountry = px.line(worldEducationForCountry,x="year",y=["school_enrol_primary_pct","school_enrol_secondary_pct","school_enrol_tertiary_pct","lit_rate_adult_pct"])
+    graphCountry.update_traces(connectgaps=True)
+    graphCountry2 = px.histogram(worldEducationForCountry,x="year",y=["gov_exp_pct_gdp","pri_comp_rate_pct"])
+    graphCountry2.update_layout(bargap=0.2,bargroupgap=0.1)
     app.layout = html.Div(children=[
                         html.Label('Year'),
                         
@@ -137,6 +184,15 @@ if __name__ == '__main__':
                             figure=heatmap
                         ),
                         daq.BooleanSwitch(id='heatmap-switch', on=False, label="Afficher les valeurs"),
+                        html.H1(children=f'Histogramme : ',
+                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+                        html.Div(children=f'''
+                            On peut voir que .... TODO .
+                        '''), # (7)
+                        dcc.Graph(
+                            id='graphContinent',
+                            figure=graphContinent
+                        ),
                         html.H1(children=f'Ratio d\élèves par professeur en '+'élémentaire 'if displayPrimaryOnMap else 'secondaire'+' en ({year})',
                                     style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
@@ -151,6 +207,30 @@ if __name__ == '__main__':
                             id='graph2',
                             figure=fig2
                         ), # (6)
+                        
+                        html.H1(children=f'Courbe',
+                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+
+
+                        html.Div(children=f'''
+                            On peut voir que .... TODO .
+                        '''), # (7)
+                        dcc.Graph(
+                            id='country_graph',
+                            figure=graphCountry
+                        ),
+                        
+                        html.H1(children=f'Histogramme',
+                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+
+
+                        html.Div(children=f'''
+                            On peut voir que .... TODO .
+                        '''), # (7)
+                        dcc.Graph(
+                            id='country_graph2',
+                            figure=graphCountry2
+                        ),
 
                     ]
                     )
