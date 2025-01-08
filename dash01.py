@@ -13,6 +13,16 @@ import dash_html_components as html
 import dash_daq as daq
 import json
 
+
+country_colors = {
+    "Europe" : "blue",
+    "Africa" : "green",
+    "Oceania" : "violet",
+    "North America" : "red",
+    "South America" : "orange",
+    "Asia" : "yellow",   
+}
+
 def getMapData(baseData,year,displayPrimary):
     columnName= "pupil_teacher_primary" if displayPrimary else "pupil_teacher_secondary"
     worldEducationForMap = baseData[(baseData[columnName].notna())&(baseData["year"]<=year)]
@@ -59,21 +69,36 @@ corr= a.corr().round(2)
 worldEducationForCountry = worldEducation[worldEducation["country"]==country_name]
 # print(worldEducationForCountry)
 # print(countryContinent[countryContinent["Three_Letter_Country_Code"]==worldEducation[worldEducation["country"]=="Japan"]["country_code"]])
+
+
+### BULLES ###
+
+bubbleData = worldEducationByYear
+bubbleData['gov_exp_pct_gdp'] = bubbleData['gov_exp_pct_gdp'].fillna(0).astype(float)
+
+### FIN BULLES ###
+
+
 @app.callback(
     [
         # dash.Output(component_id='graph1', component_property='figure'),
-        dash.Output(component_id='graph2', component_property='figure')], # (1)
+        dash.Output(component_id='graph2', component_property='figure'),
+        dash.Output(component_id='bubbleGraph', component_property='figure'),
+        ], # (1)
     [dash.Input(component_id='year-dropdown', component_property='value'),
      dash.Input(component_id='map-button-elementary', component_property='n_clicks'),
      dash.Input(component_id='map-button-secondary', component_property='n_clicks')] # (2)
 )
 def update_map(input_value, elementary_button, secondary_button): # (3)
-    global displayPrimaryOnMap, worldEducationForMap, maxPupilTeacher
+    global displayPrimaryOnMap, worldEducationForMap, maxPupilTeacher, bubbleData
     if 'map-button-elementary'== dash.ctx.triggered_id:
         displayPrimaryOnMap = True
     elif 'map-button-secondary'== dash.ctx.triggered_id:
         displayPrimaryOnMap = False
         
+    bubbleData = worldEducation[ worldEducation["year"]==input_value]
+    bubbleData['gov_exp_pct_gdp'] = bubbleData['gov_exp_pct_gdp'].fillna(0).astype(float)
+    
     worldEducationForMap, maxPupilTeacher = getMapData(worldEducation,input_value,displayPrimaryOnMap)
     return [
                 px.choropleth_map(worldEducationForMap, geojson=counties, locations='country_code', 
@@ -86,7 +111,22 @@ def update_map(input_value, elementary_button, secondary_button): # (3)
                            hover_data="country_code",
                            hover_name="country",
                            labels={'pupil_teacher_primary' if displayPrimaryOnMap else 'pupil_teacher_secondary':'Nombre d\'élèves par professeurs'}
-                                    )]
+                                    ),
+                px.scatter(
+                bubbleData,
+                x="school_enrol_primary_pct",
+                y="pri_comp_rate_pct",
+                size="gov_exp_pct_gdp",
+                hover_name="country",
+                color=bubbleData["Continent_Name"],
+                color_discrete_map={"Africa":'#5bb73b',
+                            "Asia":"#ffeb28",
+                            "Europe":"#4330e1",
+                            "North America":'#ed431f',
+                            "Oceania":"#8b26b7",
+                            "South America":"#f99f2c"}
+                )
+            ]
 
 @app.callback(
     dash.Output(component_id='heatmap', component_property='figure'), # (1)
@@ -124,6 +164,24 @@ def create_graph(clickData): #, dataframe_dropdown, residence_area_type
     
 
 if __name__ == '__main__':
+    # bubbleGraph = px.scatter(gapminder.query(f"year=={year}"), x="school_enrol_primary_pct", y="pri_comp_rate_pct", size="gov_exp_pct_gdp", hover_name="")
+
+    
+    b = px.scatter(
+        bubbleData,
+        x="school_enrol_primary_pct",
+        y="pri_comp_rate_pct",
+        size="gov_exp_pct_gdp",
+        hover_name="country",
+        color=bubbleData["Continent_Name"],
+        color_discrete_map={"Africa":'#5bb73b',
+                            "Asia":"#ffeb28",
+                            "Europe":"#4330e1",
+                            "North America":'#ed431f',
+                            "Oceania":"#8b26b7",
+                            "South America":"#f99f2c"}
+    )
+    
     heatmap = px.imshow(corr, text_auto=False)
     fig2 = px.choropleth_map(worldEducationForMap, geojson=counties, locations='country_code', 
                                   color='pupil_teacher_primary' if displayPrimaryOnMap else 'pupil_teacher_secondary',
@@ -207,6 +265,18 @@ if __name__ == '__main__':
                             id='graph2',
                             figure=fig2
                         ), # (6)
+                        
+                        html.H1(children=f'Bubble graph des statistiques des écoles primaires par continent',
+                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+
+
+                        html.Div(children=f'''
+                            On peut voir que .... TODO .
+                        '''), # (7)
+                        dcc.Graph(
+                            id='bubbleGraph',
+                            figure=b
+                        ),
                         
                         html.H1(children=f'Courbe',
                                     style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
