@@ -94,7 +94,7 @@ bubbleData['gov_exp_pct_gdp'] = bubbleData['gov_exp_pct_gdp'].fillna(0).astype(f
         dash.Output(component_id='graph2', component_property='figure'),
         dash.Output(component_id='bubbleGraph', component_property='figure'),
         ], # (1)
-    [dash.Input(component_id='year-dropdown', component_property='value'),
+    [dash.Input(component_id='year-slider', component_property='value'),
      dash.Input(component_id='map-button-elementary', component_property='n_clicks'),
      dash.Input(component_id='map-button-secondary', component_property='n_clicks')] # (2)
 )
@@ -262,114 +262,146 @@ if __name__ == '__main__':
     )
     
     app.layout = html.Div(children=[
-                        html.H1(children=f'Données globales : ',
-                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
-                        html.Label('Year'),
+                        ######### Titre de la page #########
+                        html.Div(children=[
+                            html.Div(children=[
+                                html.H1(children="World Education DashBoard"),
+                                html.H2(children="Idrissi Nidal - Leveque Lucas"),
+                            ], className="titles"),
+                        ], className="hero"),
+                        ####################################
+
                         
-                        dcc.Dropdown(
-                            id="year-dropdown",
-                            options=[
-                                {'label': '1999', 'value': 1999},
-                                {'label': '2000', 'value': 2000},
-                                {'label': '2001', 'value': 2001},
-                                {'label': '2002', 'value': 2002},
-                                {'label': '2003', 'value': 2003},
-                                {'label': '2004', 'value': 2004},
-                                {'label': '2005', 'value': 2005},
-                                {'label': '2006', 'value': 2006},
-                                {'label': '2007', 'value': 2007},
-                                {'label': '2008', 'value': 2008},
-                                {'label': '2009', 'value': 2009},
-                                {'label': '2010', 'value': 2010},
-                                {'label': '2011', 'value': 2011},
-                                {'label': '2012', 'value': 2012},
-                                {'label': '2013', 'value': 2013},
-                                {'label': '2014', 'value': 2014},
-                                {'label': '2015', 'value': 2015},
-                                {'label': '2016', 'value': 2016},
-                                {'label': '2017', 'value': 2017},
-                                {'label': '2018', 'value': 2018},
-                                {'label': '2019', 'value': 2019},
-                                {'label': '2020', 'value': 2020},
-                            ],
-                            value=year,
-                        ),
-                        html.H1(children=f'Heatmap de la corrélation entre les données du dataset',
-                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+                        ################ Les deux premiers graphiques  ################
+                        # Row avec les deux premiers graphiques
+                        html.Div(children=[
+                            # Column pour la heatmap et le switch
+                            html.Div(children=[
+                                dcc.Graph(
+                                    id='heatmap',
+                                    figure=heatmap
+                                ),
+                                
+                                daq.BooleanSwitch(id='heatmap-switch', on=False, label="Afficher les valeurs"),
+                            ], className="column"),
+                            
+                            # Histogramme 
+                            dcc.Graph(
+                                id='graphContinent',
+                                figure=graphContinent
+                            ),
+                        ], className="row"),
+                        ################################################################
+                        
+                        ################## Graphs avec dates #####################
+                        html.Div(children=[
+                            html.H3(children="Select a year", className="slider-title"),
+                            
+                            html.Div(children=[
+                                dcc.Slider(
+                                    id='year-slider',
+                                    min=1999,
+                                    max=2020,
+                                    step=1,
+                                    marks={year: str(year) for year in range(1999, 2021)},
+                                    value=year,  # Année sélectionnée par défaut
+                                ),
+                            ], className="slider-bg"),  
+                            
+                            html.Div(children=[
+                                html.H3(children="Ceci est un titre", className="section-title"),
+                                html.Div(children=f'''
+                                    La carte ci-desosus montre le nombre moyen d'élèves par professeurs dans les différentes pays. Pour les pays n'ayant pas dedonnées en {year}, nous prenons les données les plus récentes en {year}.
+                                '''), # (7)
+                                
+                                html.Div(children=[
+                                    html.Button(id='map-button-elementary',children="Élémentaire", className="button"),
+                                    html.Button(id='map-button-secondary',children="Secondaire", className="button"),
+                                ], className="buttons"),
+                                
+                                dcc.Graph(
+                                    id='graph2',
+                                    figure=fig2,
+                                ), # (6)
+                            ], className="paragraph"),
+                            
+                            
+                            html.Div(children=[
+                                html.H3(children="Ceci est un titre", className="section-title"),
+                                dcc.Graph(
+                                    id='bubbleGraph',
+                                    figure=b
+                                ),
+                            ], className="paragraph"),
+                            
+                            
+                            html.Div(children=[
+                                html.H3(children="Ceci est un titre", className="section-title"),
+                                dcc.Graph(
+                                    id='country_graph',
+                                    figure=graphCountry
+                                ),
+                            ], className="paragraph"),
+                            
+                            
+                            html.Div(children=[
+                            html.H3(children="Ceci est un titre", className="section-title"),
+                            dcc.Graph(
+                                id='country_graph2',
+                                figure=graphCountry2
+                            ),
+                            ], className="paragraph"),
+                            
+                        ], className="year-graphs-cont"),
+                        
+                        # html.H1(children=f'Heatmap de la corrélation entre les données du dataset',
+                        #             style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
 
-                        html.Div(children=f'''
-                            On peut voir que .... TODO .
-                        '''), # (7)
-                        dcc.Graph(
-                            id='heatmap',
-                            figure=heatmap
-                        ),
-                        daq.BooleanSwitch(id='heatmap-switch', on=False, label="Afficher les valeurs"),
-                        html.H1(children=f'Histogramme : ',
-                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
-                        html.Div(children=f'''
-                            On peut voir que .... TODO .
-                        '''), # (7)
-                        dcc.Graph(
-                            id='graphContinent',
-                            figure=graphContinent
-                        ),
-                        html.H1(children=f'Ratio d\élèves par professeur en '+'élémentaire 'if displayPrimaryOnMap else 'secondaire'+' en ({year})',
-                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+                        # html.Div(children=f'''
+                        #     On peut voir que .... TODO .
+                        # '''), # (7)
+                        
+                        # html.H1(children=f'Histogramme : ',
+                        #             style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+                        # html.Div(children=f'''
+                        #     On peut voir que .... TODO .
+                        # '''), # (7)
+                        
+                        # html.H1(children=f'Ratio d\élèves par professeur en '+'élémentaire 'if displayPrimaryOnMap else 'secondaire'+' en ({year})',
+                        #             style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
-
-                        html.Div(children=f'''
-                            La carte ci-desosus montre le nombre moyen d'élèves par professeurs dans les différentes pays. Pour les pays n'ayant pas dedonnées en {year}, nous prenons les données les plus récentes en {year}.
-                        '''), # (7)
-                        html.Button(id='map-button-elementary',children="Élémentaire"),
-                        html.Button(id='map-button-secondary',children="Secondaire"),
-
-                        dcc.Graph(
-                            id='graph2',
-                            figure=fig2
-                        ), # (6)
                                                 
-                        html.H1(children=f'Bubble graph des statistiques des écoles primaires par continent',
-                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+                        # html.H1(children=f'Bubble graph des statistiques des écoles primaires par continent',
+                        #             style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
 
-                        html.Div(children=f'''
-                            On peut voir que .... TODO .
-                        '''), # (7)
-                        dcc.Graph(
-                            id='bubbleGraph',
-                            figure=b
-                        ),
+                        # html.Div(children=f'''
+                        #     On peut voir que .... TODO .
+                        # '''), # (7)
                         
-                        html.H1(children=f'Données concernant: '+country_name,
-                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
-                        html.H1(children=f'Courbe',
-                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
-
-
-                        html.Div(children=f'''
-                            On peut voir que .... TODO .
-                        '''), # (7)
-                        dcc.Graph(
-                            id='country_graph',
-                            figure=graphCountry
-                        ),
                         
-                        html.H1(children=f'Histogramme',
-                                    style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+                        # html.H1(children=f'Données concernant: '+country_name,
+                        #             style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+                        # html.H1(children=f'Courbe',
+                        #             style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
 
-                        html.Div(children=f'''
-                            On peut voir que .... TODO .
-                        '''), # (7)
-                        dcc.Graph(
-                            id='country_graph2',
-                            figure=graphCountry2
-                        ),
+                        # html.Div(children=f'''
+                        #     On peut voir que .... TODO .
+                        # '''), # (7)
+                        
+                        
+                        # html.H1(children=f'Histogramme',
+                        #             style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
-                    ]
-                    )
+
+                        # html.Div(children=f'''
+                        #     On peut voir que .... TODO .
+                        # '''), # (7)
+                        
+
+                    ], className="cont")
 
     #
     # RUN APP

@@ -1,0 +1,150 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Arial", serif;
+}
+
+.hero {
+    width: 100%;
+    height: 50vh;
+    position: relative;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+h2 {
+    color: rgb(78, 78, 78);
+    font-size: 1.25rem;
+}
+
+.section-title {
+    width: 90%;
+    max-width: 1200px;
+    margin-bottom: 10px;
+    width: fit-content;
+
+    font-size: 2.5rem;
+    color: rgb(72, 139, 227);
+    font-style: italic;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    height: 70px;
+}
+
+.paragraph {
+    background: #f0f6ff;
+    border-radius: 10px;
+    padding: 40px 50px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.button {
+    width: fit-content;
+    height: fit-content;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 7px;
+    align-content: center;
+    cursor: pointer;
+    background-color: #fff;
+    font-weight: bold;
+    color: rgb(72, 139, 227);
+    transition: all 0.25s;
+}
+
+.button:hover {
+    background-color: rgb(72, 139, 227);
+    font-weight: bold;
+    color: #fff;
+    border: 3px solid rgb(72, 139, 227);
+    transform: scale(1.1);
+    border-radius: 3px;
+}
+
+.button:active {
+    transform: scale(0.9);
+}
+
+.titles {
+    position: absolute;
+    bottom: 15%;
+    right: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.slider-title {
+    color: rgb(31, 35, 45);
+    font-size: 2rem;
+    width: fit-content;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.cont {
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 90%;
+    max-width: 1500px;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    border: 5px solid #f0f6ff;
+    border-radius: 20px;
+    box-shadow: 0px 10px 10px #eef6ff;
+    padding: 20px 20px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+#heatmap {
+    height: 100%;
+}
+
+.slider-bg {
+    background: #f0f6ff;
+    padding: 20px 30px;
+    border-radius: 10px;
+}
+
+.year-graphs-cont {
+    border: 5px solid #f0f6ff;
+    border-radius: 20px;
+    box-shadow: 0px 10px 10px #eef6ff;
+    padding: 50px 70px;
+
+    width: 90%;
+    max-width: 1500px;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+
+.map {
+    width: 90%;
+    margin: 0 auto;
+    aspect-ratio: 1;
+}
