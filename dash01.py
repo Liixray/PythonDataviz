@@ -171,7 +171,7 @@ app = dash.Dash(__name__)
         dash.Output(component_id='bubbleGraph', component_property='figure'),
         dash.Output(component_id='continentGDPGraph',component_property='figure')
         ],
-    [dash.Input(component_id='year-dropdown', component_property='value')]
+    [dash.Input(component_id='year-slider', component_property='value')]
 )
 def updateYear(input_value:int) -> list[go.Figure]:
     global displayPrimaryOnMap, worldEducationForMap, maxPupilTeacher, bubbleData, continentEducationData, year
@@ -261,8 +261,8 @@ if __name__ == '__main__':
                             
                             # Histogramme 
                             dcc.Graph(
-                                id='graphContinent',
-                                figure=graphContinent
+                                id='continentGDPGraph',
+                                figure=continentGDPGraph
                             ),
                         ], className="row"),
                         ################################################################
@@ -294,8 +294,8 @@ if __name__ == '__main__':
                                 ], className="buttons"),
                                 
                                 dcc.Graph(
-                                    id='graph2',
-                                    figure=fig2,
+                                    id='educationWorldMap',
+                                    figure=educationWorldMap,
                                 ), # (6)
                             ], className="paragraph"),
                             
@@ -304,7 +304,7 @@ if __name__ == '__main__':
                                 html.H3(children="Ceci est un titre", className="section-title"),
                                 dcc.Graph(
                                     id='bubbleGraph',
-                                    figure=b
+                                    figure=bubbleGraph
                                 ),
                             ], className="paragraph"),
                             
@@ -312,8 +312,8 @@ if __name__ == '__main__':
                             html.Div(children=[
                                 html.H3(children="Ceci est un titre", className="section-title"),
                                 dcc.Graph(
-                                    id='country_graph',
-                                    figure=graphCountry
+                                    id='countryCurveEvolution',
+                                    figure=countryCurveEvolution
                                 ),
                             ], className="paragraph"),
                             
@@ -321,7 +321,7 @@ if __name__ == '__main__':
                             html.Div(children=[
                             html.H3(children="Ceci est un titre", className="section-title"),
                             dcc.Graph(
-                                id='country_graph2',
+                                id='graphCountry2',
                                 figure=graphCountry2
                             ),
                             ], className="paragraph"),
