@@ -12,14 +12,16 @@ from dash import html
 import dash_daq as daq
 import json
 from typing import Any
-from src.utils import draw_graph, download_data, get_data
+from src.utils import  draw_graph,format_graph_data, get_data, clean_data
+
 
 #  iris.rename(columns={   "sepal.length": "sepal_length",
 #                     "sepal.width": "sepal_width",
 #                     "petal.length": "petal_length",
 #                     "petal.width": "petal_width"},
 #                         inplace = True)
-download_data.downloadAndCleanDataset()
+get_data.downloadDataset()
+clean_data.cleanDataset()
 
 with open("data/cleaned/countries.geo.json", "r") as f:
     countries = json.load(f)
@@ -31,12 +33,12 @@ displayPrimaryOnMap = True
 
 worldEducation = pds.read_csv("data/cleaned/cleaned-world-education-data.csv")
 
-correlationData = get_data.getCorrelationData(worldEducation)
-continentEducationData = get_data.getContinentEducationData(worldEducation, year)
-worldEducationForMap, maxPupilTeacher = get_data.getMapData(
+correlationData = format_graph_data.getCorrelationData(worldEducation)
+continentEducationData = format_graph_data.getContinentEducationData(worldEducation, year)
+worldEducationForMap, maxPupilTeacher = format_graph_data.getMapData(
     worldEducation, year, displayPrimaryOnMap
 )
-bubbleData = get_data.getBubbleData(worldEducation, year)
+bubbleData = format_graph_data.getBubbleData(worldEducation, year)
 countryEducationData = worldEducation[worldEducation["country"] == country_name]
 
 
@@ -57,11 +59,11 @@ def updateYear(input_value: int) -> list[go.Figure]:
 
     year = input_value
 
-    bubbleData = get_data.getBubbleData(worldEducation, year)
-    worldEducationForMap, maxPupilTeacher = get_data.getMapData(
+    bubbleData = format_graph_data.getBubbleData(worldEducation, year)
+    worldEducationForMap, maxPupilTeacher = format_graph_data.getMapData(
         worldEducation, year, displayPrimaryOnMap
     )
-    continentEducationData = get_data.getContinentEducationData(worldEducation, year)
+    continentEducationData = format_graph_data.getContinentEducationData(worldEducation, year)
     return [
         draw_graph.drawEducationWorldMap(
             worldEducationForMap, countries, displayPrimaryOnMap, maxPupilTeacher
@@ -89,7 +91,7 @@ def changeMapSchoolType(elementary_button: str, secondary_button: str) -> go.Fig
         displayPrimaryOnMap = True
     elif "map-button-secondary" == dash.ctx.triggered_id:
         displayPrimaryOnMap = False
-    worldEducationForMap, maxPupilTeacher = get_data.getMapData(
+    worldEducationForMap, maxPupilTeacher = format_graph_data.getMapData(
         worldEducation, year, displayPrimaryOnMap
     )
     return draw_graph.drawEducationWorldMap(

@@ -42,7 +42,7 @@ def drawEducationWorldMap(
                 if shouldDisplayPrimary
                 else "pupil_teacher_secondary"
             ): "Nombre d'élèves par professeurs",
-            "country_code":"Code du pays"
+            "country_code": "Code du pays",
         },
     )
 
@@ -61,7 +61,7 @@ def drawBubbleGraph(bubbleGraphData: pds.DataFrame) -> go.Figure:
             "school_enrol_primary_pct": "Taux de scolarisation primaire en pourcentage",
             "pri_comp_rate_pct": "Taux de réussite du cycle primaire en pourcentage",
             "gov_exp_pct_gdp": "Pourcentage du PIB investi dans l'éducation",
-            "Continent_Name":"Continent"
+            "Continent_Name": "Continent",
         },
     )
 
@@ -76,7 +76,7 @@ def drawContinentGDPGraph(continentEducationData: pds.DataFrame) -> go.Figure:
         color_discrete_map=continent_colors,
         labels={
             "gov_exp_pct_gdp": "Pourcentage du PIB investi dans l'éducation",
-            "Continent_Name":"Continent"
+            "Continent_Name": "Continent",
         },
     ).update_layout(yaxis_title="Pourcentage moyen du PIB investi dans l'éducation")
 
@@ -89,21 +89,21 @@ def drawCountryCurveEvolution(countryEducationData: pds.DataFrame) -> go.Figure:
         "lit_rate_adult_pct",
     ]
     newnames = {
-            "school_enrol_primary_pct": "Taux de scolarisation primaire en pourcentage",
-            "school_enrol_secondary_pct": "Taux de scolarisation secondaire en pourcentage",
-            "school_enrol_tertiary_pct": "Taux de scolarisation tertiaire en pourcentage",
-            "lit_rate_adult_pct":"Taux d'alphabétisation des adultes en pourcentage"
-        }
+        "school_enrol_primary_pct": "Taux de scolarisation primaire en pourcentage",
+        "school_enrol_secondary_pct": "Taux de scolarisation secondaire en pourcentage",
+        "school_enrol_tertiary_pct": "Taux de scolarisation tertiaire en pourcentage",
+        "lit_rate_adult_pct": "Taux d'alphabétisation des adultes en pourcentage",
+    }
 
     countryCurveEvolution = px.line(
         countryEducationData,
         x="year",
         y=yAxisColumns,
         range_y=[0, max(105, countryEducationData[yAxisColumns].max().max() + 5)],
-        labels={"year":"Année","value":"Pourcentage"},
+        labels={"year": "Année", "value": "Pourcentage"},
     )
     countryCurveEvolution.update_traces(connectgaps=True)
-    countryCurveEvolution.for_each_trace(lambda t:t.update(name=newnames[t.name]))
+    countryCurveEvolution.for_each_trace(lambda t: t.update(name=newnames[t.name]))
     return countryCurveEvolution
 
 
@@ -114,8 +114,8 @@ def drawCountryPIBLiteratePopulation(countryGraphData: pds.DataFrame) -> go.Figu
         go.Bar(
             x=countryGraphData["year"],
             y=countryGraphData["gov_exp_pct_gdp"],
-            name="Pourcentage du PB investi dans l'éducation", 
-            marker_color="blue", 
+            name="Pourcentage du PB investi dans l'éducation",
+            marker_color="blue",
         )
     )
 
@@ -124,16 +124,16 @@ def drawCountryPIBLiteratePopulation(countryGraphData: pds.DataFrame) -> go.Figu
             x=countryGraphData["year"],
             y=countryGraphData["lit_rate_adult_pct"],
             name="Pourcentage de la population lettrée",  #
-            marker_color="orange", 
+            marker_color="orange",
         )
     )
 
     countryPIBLiteratePopulation.update_layout(
-        barmode="group",  
+        barmode="group",
         xaxis=dict(
             title="Année",
-            tickmode="linear", 
-            dtick=1,  
+            tickmode="linear",
+            dtick=1,
         ),
         yaxis_title="Pourcentage",
         yaxis_range=[0, 105],
