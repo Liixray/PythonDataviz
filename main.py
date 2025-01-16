@@ -27,7 +27,7 @@ with open("data/cleaned/countries.geo.json", "r") as f:
     countries = json.load(f)
 
 # Default values
-year = 2020
+year = 2023
 country_name = "France"
 displayPrimaryOnMap = True
 
@@ -53,6 +53,9 @@ app = dash.Dash(__name__)
         dash.Output(component_id="educationWorldMap", component_property="figure"),
         dash.Output(component_id="bubbleGraph", component_property="figure"),
         dash.Output(component_id="continentGDPGraph", component_property="figure"),
+        dash.Output(component_id="continentGDPGraphTitle", component_property="children"),
+        dash.Output(component_id="bubbleGraphTitle", component_property="children"),
+        dash.Output(component_id="educationWorldMapTitle", component_property="children"),
     ],
     [dash.Input(component_id="year-slider", component_property="value")],
 )
@@ -74,22 +77,31 @@ def updateYear(input_value: int) -> list[go.Figure]:
         ),
         draw_graph.drawBubbleGraph(bubbleData),
         draw_graph.drawContinentGDPGraph(continentEducationData),
+        f"Investissements moyens dans l'éducation par continent ({year})",
+        f"Accès à la scolarisation primaire (et réussite) par pays ({year})",
+        f"Nombre moyen d'élèves par professeur en {'primaire' if displayPrimaryOnMap else 'secondaire'} par pays ({year})",
     ]
 
 
 @app.callback(
-    dash.Output(
-        component_id="educationWorldMap",
-        component_property="figure",
-        allow_duplicate=True,
-    ),
     [
+        dash.Output(
+            component_id="educationWorldMap",
+            component_property="figure",
+            allow_duplicate=True,
+        ),
+        dash.Output(
+            component_id="educationWorldMapTitle", 
+            component_property="children",
+            allow_duplicate=True,
+        ),
+    ],[
         dash.Input(component_id="map-button-elementary", component_property="n_clicks"),
         dash.Input(component_id="map-button-secondary", component_property="n_clicks"),
     ],
     prevent_initial_call=True,
 )
-def changeMapSchoolType(elementary_button: str, secondary_button: str) -> go.Figure:
+def changeMapSchoolType(elementary_button: str, secondary_button: str) -> list[go.Figure]:
     global displayPrimaryOnMap, worldEducationForMap, year
     if "map-button-elementary" == dash.ctx.triggered_id:
         displayPrimaryOnMap = True
@@ -98,9 +110,12 @@ def changeMapSchoolType(elementary_button: str, secondary_button: str) -> go.Fig
     worldEducationForMap, maxPupilTeacher = format_graph_data.getMapData(
         worldEducation, year, displayPrimaryOnMap
     )
-    return draw_graph.drawEducationWorldMap(
-        worldEducationForMap, countries, displayPrimaryOnMap, maxPupilTeacher
-    )
+    return [
+        draw_graph.drawEducationWorldMap(
+            worldEducationForMap, countries, displayPrimaryOnMap, maxPupilTeacher
+        ),
+        f"Nombre moyen d'élèves par professeur en {'primaire' if displayPrimaryOnMap else 'secondaire'} par pays ({year})",
+    ]
 
 
 @app.callback(
@@ -201,8 +216,9 @@ if __name__ == "__main__":
                     html.Div(
                         children=[
                             html.H3(
-                                children=f'Investissements moyens dans l\'éducation par continent ({year})',
+                                children=f"Investissements moyens dans l'éducation par continent ({year})",
                                 className="section-title",
+                                id="continentGDPGraphTitle",
                             ),
                             dcc.Loading(
                                 dcc.Graph(
@@ -231,9 +247,9 @@ if __name__ == "__main__":
                             dcc.Slider(
                                 id="year-slider",
                                 min=1999,
-                                max=2020,
+                                max=2023,
                                 step=1,
-                                marks={year: str(year) for year in range(1999, 2021)},
+                                marks={year: str(year) for year in range(1999, 2024)},
                                 value=year,  # Année sélectionnée par défaut
                             ),
                         ],
@@ -242,7 +258,9 @@ if __name__ == "__main__":
                     html.Div(
                         children=[
                             html.H3(
-                                children=f'Accès à la scolarisation primaire (et réussite) par pays ({year})', className="section-title"
+                                children=f"Accès à la scolarisation primaire (et réussite) par pays ({year})",
+                                className="section-title",
+                                id="bubbleGraphTitle",
                             ),
                             dcc.Loading(
                                 dcc.Graph(id="bubbleGraph", figure=bubbleGraph),
@@ -259,7 +277,9 @@ if __name__ == "__main__":
                     html.Div(
                         children=[
                             html.H3(
-                                children=f"Nombre moyen d'élèves par professeur en {'primaire' if displayPrimaryOnMap else 'secondaire'} par pays ({year})", className="section-title"
+                                children=f"Nombre moyen d'élèves par professeur en {'primaire' if displayPrimaryOnMap else 'secondaire'} par pays ({year})",
+                                className="section-title",
+                                id="educationWorldMapTitle",
                             ),
                             html.Div(
                                 children=f"""
@@ -308,7 +328,8 @@ if __name__ == "__main__":
                     html.Div(
                         children=[
                             html.H3(
-                                children="Évolution des taux de scolarisation et d'alphbétisation (1999-2023)", className="section-title"
+                                children="Évolution des taux de scolarisation et d'alphbétisation (1999-2023)",
+                                className="section-title",
                             ),
                             dcc.Loading(
                                 dcc.Graph(
@@ -328,7 +349,8 @@ if __name__ == "__main__":
                     html.Div(
                         children=[
                             html.H3(
-                                children="Impact des investissements dans l'éducation sur l'alphabétisation de la population", className="section-title"
+                                children="Impact des investissements dans l'éducation sur l'alphabétisation de la population",
+                                className="section-title",
                             ),
                             dcc.Loading(
                                 dcc.Graph(
