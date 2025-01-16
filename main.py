@@ -242,7 +242,7 @@ if __name__ == "__main__":
                             ),
                             html.Div(
                                 children=f"""
-                                    La carte ci-desosus montre le nombre moyen d'élèves par professeurs dans les différentes pays. Pour les pays n'ayant pas dedonnées en {year}, nous prenons les données les plus récentes en {year}.
+                                    La carte ci-dessous montre le nombre moyen d'élèves par professeurs dans les différentes pays. Pour les pays n'ayant pas de données en {year}, nous prenons les données les plus récentes en {year}.
                                 """
                             ),  
                             html.Div(
@@ -275,6 +275,13 @@ if __name__ == "__main__":
                         ],
                         className="paragraph",
                     ),
+                ],
+                className="graphs-cont",
+            ),
+            
+            html.Div(
+                children=[
+                    html.H2(children="Graphiques du pays : NomDuPays", className="graph-cont-title"),
                     html.Div(
                         children=[
                             html.H3(
@@ -314,10 +321,10 @@ if __name__ == "__main__":
                             ),
                         ],
                         className="paragraph",
-                    ),
+                    )
                 ],
-                className="year-graphs-cont",
-            ),
+                className="graphs-cont"
+            )
             # html.H1(children=f'Heatmap de la corrélation entre les données du dataset',
             #             style={'textAlign': 'center', 'color': '#7FDBFF'}), 
             # html.Div(children=f'''

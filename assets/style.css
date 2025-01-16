@@ -15,10 +15,11 @@
 
 h1 {
     font-size: 3rem;
+    color: rgb(72, 139, 227);
 }
 
 h2 {
-    color: rgb(78, 78, 78);
+    color: rgb(111, 173, 255);
     font-size: 1.25rem;
 }
 
@@ -127,7 +128,16 @@ h2 {
     border-radius: 10px;
 }
 
-.year-graphs-cont {
+
+.graph-cont-title {
+    font-size: 3rem;
+    color: #000;
+    align-self: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.graphs-cont {
     border: 5px solid #f0f6ff;
     border-radius: 20px;
     box-shadow: 0px 10px 10px #eef6ff;
@@ -136,6 +146,7 @@ h2 {
     width: 90%;
     max-width: 1500px;
     margin: 0 auto;
+    margin-bottom: 50px;
 
     display: flex;
     flex-direction: column;
