@@ -78,7 +78,7 @@ def drawContinentGDPGraph(continentEducationData: pds.DataFrame) -> go.Figure:
             "gov_exp_pct_gdp": "Pourcentage du PIB investi dans l'éducation",
             "Continent_Name": "Continent",
         },
-    ).update_layout(yaxis_title="Pourcentage moyen du PIB investi dans l'éducation")
+    ).update_layout(yaxis_title="Pourcentage moyen du PIB investi dans l'éducation").update_traces(hovertemplate='Continent: %{x} <br>PIB investi dans l\'éducation: %{y}%')
 
 
 def drawCountryCurveEvolution(countryEducationData: pds.DataFrame) -> go.Figure:
@@ -100,7 +100,7 @@ def drawCountryCurveEvolution(countryEducationData: pds.DataFrame) -> go.Figure:
         x="year",
         y=yAxisColumns,
         range_y=[0, max(105, countryEducationData[yAxisColumns].max().max() + 5)],
-        labels={"year": "Année", "value": "Pourcentage"},
+        labels={"year": "Année", "value": "Pourcentage", "variable":"Légende"},
     )
     countryCurveEvolution.update_traces(connectgaps=True)
     countryCurveEvolution.for_each_trace(lambda t: t.update(name=newnames[t.name]))

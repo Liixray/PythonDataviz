@@ -58,8 +58,6 @@ def getCorrelationData(baseData: pds.DataFrame) -> pds.DataFrame:
         "gov_exp_pct_gdp": "PIB investi dans l'éducation",
     }
     baseData = baseData.rename(columns=renamed_columns, index=renamed_columns)
-    # corrData =
     dataTypes = baseData.drop(columns=["year"]).select_dtypes(include=[np.number])
-    # .drop(baseData.columns[baseData.columns.str.contains('unnamed',case = True)])
     correlationData = dataTypes.corr().round(2)
     return correlationData

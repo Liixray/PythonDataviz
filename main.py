@@ -12,7 +12,7 @@ from dash import html
 import dash_daq as daq
 import json
 from typing import Any
-from src.utils import  draw_graph,format_graph_data, get_data, clean_data
+from src.utils import draw_graph, format_graph_data, get_data, clean_data
 
 
 #  iris.rename(columns={   "sepal.length": "sepal_length",
@@ -34,7 +34,9 @@ displayPrimaryOnMap = True
 worldEducation = pds.read_csv("data/cleaned/cleaned-world-education-data.csv")
 
 correlationData = format_graph_data.getCorrelationData(worldEducation)
-continentEducationData = format_graph_data.getContinentEducationData(worldEducation, year)
+continentEducationData = format_graph_data.getContinentEducationData(
+    worldEducation, year
+)
 worldEducationForMap, maxPupilTeacher = format_graph_data.getMapData(
     worldEducation, year, displayPrimaryOnMap
 )
@@ -63,7 +65,9 @@ def updateYear(input_value: int) -> list[go.Figure]:
     worldEducationForMap, maxPupilTeacher = format_graph_data.getMapData(
         worldEducation, year, displayPrimaryOnMap
     )
-    continentEducationData = format_graph_data.getContinentEducationData(worldEducation, year)
+    continentEducationData = format_graph_data.getContinentEducationData(
+        worldEducation, year
+    )
     return [
         draw_graph.drawEducationWorldMap(
             worldEducationForMap, countries, displayPrimaryOnMap, maxPupilTeacher
@@ -104,7 +108,7 @@ def changeMapSchoolType(elementary_button: str, secondary_button: str) -> go.Fig
     dash.Input(component_id="heatmap-switch", component_property="on"),
 )
 def ToggleHeatMapText(on: bool) -> go.Figure:
-    return px.imshow(correlationData, text_auto=on,labels={"color": "Corrélation"})
+    return px.imshow(correlationData, text_auto=on, labels={"color": "Corrélation"})
 
 
 # Now create the graph that updates the country name based on hover and showing Years on x-axis and Display value
@@ -134,7 +138,9 @@ def updateCountryBasedGraph(clickData: dict[str, Any]) -> list[go.Figure]:
 
 if __name__ == "__main__":
     bubbleGraph = draw_graph.drawBubbleGraph(bubbleData)
-    heatmap = px.imshow(correlationData, text_auto=False,labels={"color": "Corrélation"})
+    heatmap = px.imshow(
+        correlationData, text_auto=False, labels={"color": "Corrélation"}
+    )
     educationWorldMap = draw_graph.drawEducationWorldMap(
         worldEducationForMap, countries, displayPrimaryOnMap, maxPupilTeacher
     )
@@ -168,6 +174,10 @@ if __name__ == "__main__":
                     # Column pour la heatmap et le switch
                     html.Div(
                         children=[
+                            html.H3(
+                                children="Matrice de corrélation du jeu de données",
+                                className="section-title",
+                            ),
                             dcc.Loading(
                                 [
                                     dcc.Graph(id="heatmap", figure=heatmap),
@@ -183,19 +193,30 @@ if __name__ == "__main__":
                                     "opacity": 0.5,
                                     "backgroundColor": "white",
                                 },
-                            )
+                            ),
                         ],
                         className="column",
                     ),
                     # Histogramme
-                    dcc.Loading(
-                        dcc.Graph(id="continentGDPGraph", figure=continentGDPGraph),
-                        type="default",
-                        overlay_style={
-                            "visibility": "visible",
-                            "opacity": 0.5,
-                            "backgroundColor": "white",
-                        },
+                    html.Div(
+                        children=[
+                            html.H3(
+                                children=f'Investissements moyens dans l\'éducation par continent ({year})',
+                                className="section-title",
+                            ),
+                            dcc.Loading(
+                                dcc.Graph(
+                                    id="continentGDPGraph", figure=continentGDPGraph
+                                ),
+                                type="default",
+                                overlay_style={
+                                    "visibility": "visible",
+                                    "opacity": 0.5,
+                                    "backgroundColor": "white",
+                                },
+                            ),
+                        ],
+                        className="column",
                     ),
                 ],
                 className="row",
@@ -221,7 +242,7 @@ if __name__ == "__main__":
                     html.Div(
                         children=[
                             html.H3(
-                                children="Ceci est un titre", className="section-title"
+                                children=f'Accès à la scolarisation primaire (et réussite) par pays ({year})', className="section-title"
                             ),
                             dcc.Loading(
                                 dcc.Graph(id="bubbleGraph", figure=bubbleGraph),
@@ -238,13 +259,13 @@ if __name__ == "__main__":
                     html.Div(
                         children=[
                             html.H3(
-                                children="Ceci est un titre", className="section-title"
+                                children=f"Nombre moyen d'élèves par professeur en {'primaire' if displayPrimaryOnMap else 'secondaire'} par pays ({year})", className="section-title"
                             ),
                             html.Div(
                                 children=f"""
                                     La carte ci-dessous montre le nombre moyen d'élèves par professeurs dans les différentes pays. Pour les pays n'ayant pas de données en {year}, nous prenons les données les plus récentes en {year}.
                                 """
-                            ),  
+                            ),
                             html.Div(
                                 children=[
                                     html.Button(
@@ -264,7 +285,7 @@ if __name__ == "__main__":
                                 dcc.Graph(
                                     id="educationWorldMap",
                                     figure=educationWorldMap,
-                                ),  
+                                ),
                                 type="default",
                                 overlay_style={
                                     "visibility": "visible",
@@ -278,14 +299,16 @@ if __name__ == "__main__":
                 ],
                 className="graphs-cont",
             ),
-            
             html.Div(
                 children=[
-                    html.H2(children="Graphiques du pays : NomDuPays", className="graph-cont-title"),
+                    html.H2(
+                        children=f"Graphiques du pays : {country_name}",
+                        className="graph-cont-title",
+                    ),
                     html.Div(
                         children=[
                             html.H3(
-                                children="Ceci est un titre", className="section-title"
+                                children="Évolution des taux de scolarisation et d'alphbétisation (1999-2023)", className="section-title"
                             ),
                             dcc.Loading(
                                 dcc.Graph(
@@ -305,7 +328,7 @@ if __name__ == "__main__":
                     html.Div(
                         children=[
                             html.H3(
-                                children="Ceci est un titre", className="section-title"
+                                children="Impact des investissements dans l'éducation sur l'alphabétisation de la population", className="section-title"
                             ),
                             dcc.Loading(
                                 dcc.Graph(
@@ -321,45 +344,12 @@ if __name__ == "__main__":
                             ),
                         ],
                         className="paragraph",
-                    )
+                    ),
                 ],
-                className="graphs-cont"
-            )
-            # html.H1(children=f'Heatmap de la corrélation entre les données du dataset',
-            #             style={'textAlign': 'center', 'color': '#7FDBFF'}), 
-            # html.Div(children=f'''
-            #     On peut voir que .... TODO .
-            # '''), 
-            # html.H1(children=f'Histogramme : ',
-            #             style={'textAlign': 'center', 'color': '#7FDBFF'}), 
-            # html.Div(children=f'''
-            #     On peut voir que .... TODO .
-            # '''), 
-            # html.H1(children=f'Ratio d\élèves par professeur en '+'élémentaire 'if displayPrimaryOnMap else 'secondaire'+' en ({year})',
-            #             style={'textAlign': 'center', 'color': '#7FDBFF'}), 
-            # html.H1(children=f'Bubble graph des statistiques des écoles primaires par continent',
-            #             style={'textAlign': 'center', 'color': '#7FDBFF'}), 
-            # html.Div(children=f'''
-            #     On peut voir que .... TODO .
-            # '''), 
-            # html.H1(children=f'Données concernant: '+country_name,
-            #             style={'textAlign': 'center', 'color': '#7FDBFF'}), 
-            # html.H1(children=f'Courbe',
-            #             style={'textAlign': 'center', 'color': '#7FDBFF'}), 
-            # html.Div(children=f'''
-            #     On peut voir que .... TODO .
-            # '''), 
-            # html.H1(children=f'Histogramme',
-            #             style={'textAlign': 'center', 'color': '#7FDBFF'}), 
-            # html.Div(children=f'''
-            #     On peut voir que .... TODO .
-            # '''), 
+                className="graphs-cont",
+            ),
         ],
         className="cont",
     )
-
-    #
-    # RUN APP
-    #
 
     app.run_server(debug=True)
