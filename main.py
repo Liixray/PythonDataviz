@@ -27,7 +27,7 @@ with open("data/cleaned/countries.geo.json", "r") as f:
     countries = json.load(f)
 
 # Default values
-year = 2023
+year = 2020
 country_name = "France"
 displayPrimaryOnMap = True
 
