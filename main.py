@@ -56,6 +56,7 @@ app = dash.Dash(__name__)
         dash.Output(component_id="continentGDPGraphTitle", component_property="children"),
         dash.Output(component_id="bubbleGraphTitle", component_property="children"),
         dash.Output(component_id="educationWorldMapTitle", component_property="children"),
+        dash.Output(component_id="mapDescription", component_property="children"),
     ],
     [dash.Input(component_id="year-slider", component_property="value")],
 )
@@ -80,6 +81,7 @@ def updateYear(input_value: int) -> list[go.Figure]:
         f"Investissements moyens dans l'éducation par continent ({year})",
         f"Accès à la scolarisation primaire (et réussite) par pays ({year})",
         f"Nombre moyen d'élèves par professeur en {'primaire' if displayPrimaryOnMap else 'secondaire'} par pays ({year})",
+        f"La carte ci-dessous montre le nombre moyen d'élèves par professeurs dans les différents pays. Pour les pays n'ayant pas de données en {year}, nous prenons les données les plus récentes en {year}."
     ]
 
 
@@ -309,7 +311,8 @@ if __name__ == "__main__":
                             html.Div(
                                 children=f"""
                                     La carte ci-dessous montre le nombre moyen d'élèves par professeurs dans les différents pays. Pour les pays n'ayant pas de données en {year}, nous prenons les données les plus récentes en {year}.
-                                """
+                                """,
+                                id="mapDescription"
                             ),
                             html.Div(
                                 children=f"""
