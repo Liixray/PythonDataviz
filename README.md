@@ -56,6 +56,44 @@ flowchart TD
   Q-->L;
   
 ```
+
+
+```
+.
+├── assets
+│   ├── style.css
+│   ├── test.jpg
+│   └── test2.jpg
+├── data
+│   ├── cleaned
+│   │   ├── cleaned-world-education-data.csv
+│   │   └── countries.geo.json
+│   └── raw
+│       ├── country-and-continent-codes-list.csv
+│       └── world-education-data.csv
+├── src
+│   ├── __init__.py
+│   └── utils
+│       ├── __init__.py
+│       ├── clean_data.py
+│       ├── draw_graph.py
+│       ├── format_graph_data.py
+│       └── get_data.py
+├── main.py
+├── config.py
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
+
+Pour ajouter de nouveaux graphiques au dashboard, voici où regarder :
+
+- `get_data.py` : contient la fonction permettant de télécharger les jeux de données utilisées
+- `clean_data.py` : contient la fonction utilisée pour nettoyer les jeux de données
+- `format_graph_data.py` : contient les fonctions utilisées pour formater les données à utiliser pour créer les graphique du dashboard.
+- `draw_graph.py` : contient les fonctions utilisées pour créer les graphiques à afficher à partir des données formatées
+- `main.py` : contient le coeur du projet avec les différents appels aux fonctions citées précédemment, ainsi que les fonction callback utilisées pour mettre à jour les graphiques.
+
 ## Rapport d'analyse
 
 ### 1. Graphiques généraux
