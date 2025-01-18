@@ -2,7 +2,7 @@
 
 ## Guide utilisateur
 
-1. Assurez-vous que le votre dossier "C:\Users\[UserName]\.kaggle" contient bien le fichier kaggle.json contenant votre Token API Kaggle. Pour obtenir votre Token API, connectez vous sur https://www.kaggle.com, puis dans la partie "Settings" et appuyez sur "Create New Token"
+1. Assurez-vous que le votre dossier "C:\Users\\[UserName]\\.kaggle" contient bien le fichier kaggle.json contenant votre Token API Kaggle. Pour obtenir votre Token API, connectez vous sur https://www.kaggle.com, puis dans la partie "Settings" et appuyez sur "Create New Token"
 2. Installez les dépendances avec la commande : 
 `pip install -r requirements.txt`
 1. Lancez le dashboard avec : 
