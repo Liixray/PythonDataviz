@@ -134,6 +134,9 @@ def ToggleHeatMapText(on: bool) -> go.Figure:
         dash.Output(
             component_id="countryPIBLiteratePopulation", component_property="figure"
         ),
+        dash.Output(
+            component_id="graphByCountryTitle", component_property="children"
+        )
     ],
     dash.Input(component_id="educationWorldMap", component_property="clickData"),
 )
@@ -146,6 +149,7 @@ def updateCountryBasedGraph(clickData: dict[str, Any]) -> list[go.Figure]:
     return [
         draw_graph.drawCountryCurveEvolution(countryEducationData),
         draw_graph.drawCountryPIBLiteratePopulation(countryEducationData),
+        f"Graphiques du pays : {country_name}",
     ]
 
 
@@ -355,11 +359,12 @@ if __name__ == "__main__":
                     html.H2(
                         children=f"Graphiques du pays : {country_name}",
                         className="graph-cont-title",
+                        id="graphByCountryTitle"
                     ),
                     html.Div(
                         children=[
                             html.H3(
-                                children="Évolution des taux de scolarisation et d'alphbétisation (1999-2023)",
+                                children="Évolution des taux de scolarisation et d'alphabétisation (1999-2023)",
                                 className="section-title",
                             ),
                             dcc.Loading(
