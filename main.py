@@ -193,6 +193,11 @@ if __name__ == "__main__":
                                 children="Matrice de corrélation du jeu de données",
                                 className="section-title",
                             ),
+                            html.Div(
+                                children=f"""
+                                    Cette matrice illustre le degré de corrélation entre deux données : plus la couleur est jaune, plus elles sont corrélées ; plus elle est bleue, plus elles sont inversement corrélées.
+                                """
+                            ),
                             dcc.Loading(
                                 [
                                     dcc.Graph(id="heatmap", figure=heatmap),
@@ -209,6 +214,7 @@ if __name__ == "__main__":
                                     "backgroundColor": "white",
                                 },
                             ),
+                           
                         ],
                         className="column",
                     ),
@@ -219,6 +225,11 @@ if __name__ == "__main__":
                                 children=f"Investissements moyens dans l'éducation par continent ({year})",
                                 className="section-title",
                                 id="continentGDPGraphTitle",
+                            ),
+                            html.Div(
+                                children=f"""
+                                    Cet histogramme montre l'investissement globale dans le milieu de l'éducation pour chaque continent.
+                                """
                             ),
                             dcc.Loading(
                                 dcc.Graph(
@@ -262,6 +273,16 @@ if __name__ == "__main__":
                                 className="section-title",
                                 id="bubbleGraphTitle",
                             ),
+                            html.Div(
+                                children=f"""
+                                    Ce graphique représente le pourcentage du PIB investi en fonction du taux de réussite du cycle primaire et du taux de scolarisation en primaire afin de montrer en détail comment l'investissement d'un pays dans l'éducation impacte les élèves en élémentaire.
+                                """
+                            ),
+                            html.Div(
+                                children=f"""
+                                    Chaque pays est coloré par rapport au continent auquel il appartient et la taille de chaque bulle est liée au pourcentage du PIB investi.
+                                """
+                            ),
                             dcc.Loading(
                                 dcc.Graph(id="bubbleGraph", figure=bubbleGraph),
                                 type="default",
@@ -283,7 +304,17 @@ if __name__ == "__main__":
                             ),
                             html.Div(
                                 children=f"""
-                                    La carte ci-dessous montre le nombre moyen d'élèves par professeurs dans les différentes pays. Pour les pays n'ayant pas de données en {year}, nous prenons les données les plus récentes en {year}.
+                                    La carte ci-dessous montre le nombre moyen d'élèves par professeurs dans les différents pays. Pour les pays n'ayant pas de données en {year}, nous prenons les données les plus récentes en {year}.
+                                """
+                            ),
+                            html.Div(
+                                children=f"""
+                                    Avec les deux boutons ci-dessous, vous pouvez changer l'affichage de la carte pour montrer les données concernant le cycle élementaire (primaire en France) ou le cycle secondaire (collège, lycée en france).
+                                """
+                            ),
+                            html.Div(
+                                children=f"""
+                                    En cliquant sur un des pays, vous pouvez changer le pays ciblé par les graphiques en dessous de la carte.
                                 """
                             ),
                             html.Div(
